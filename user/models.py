@@ -4,21 +4,25 @@ import datetime
 from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser
 from django.conf import settings
-
+from .managers import CustomUserManager
+from django.contrib.auth.models import PermissionsMixin
 
 class Role(models.TextChoices):
         ADMIN = 'admin', 'admin'
         AUTHOR = 'author', 'author'
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser,PermissionsMixin):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.CharField(max_length=255, unique=True)
     role = models.CharField(max_length=10, choices=Role.choices, default=Role.AUTHOR)
     password = models.CharField(max_length=255)
+    is_staff = models.BooleanField(default=False)
     verified = models.BooleanField(default=False)
     
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
+    
+    objects = CustomUserManager()
 
     def __str__(self):
         return self.email

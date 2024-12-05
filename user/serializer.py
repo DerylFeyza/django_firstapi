@@ -1,7 +1,21 @@
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.validators import ValidationError
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .models import User
+
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        # Add custom claims
+        token['email'] = user.email
+        token['role'] = user.role
+        # ...
+
+        return token
 
 
 class SignUpSerializer(serializers.ModelSerializer):
