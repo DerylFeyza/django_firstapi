@@ -2,14 +2,10 @@ from django.db import models
 import datetime
 from django.utils import timezone
 
-class User(models.Model):
-    username = models.CharField(max_length=200)
-    password = models.CharField(max_length=200)
-
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
     pub_date = models.DateTimeField("date published")
-    user = models.ForeignKey(User, related_name='questions', on_delete=models.CASCADE)
+    author = models.ForeignKey("user.User", related_name='created', on_delete=models.CASCADE)
     def __str__(self):
         return self.question_text
     def was_published_recently(self):
